@@ -1,0 +1,500 @@
+<div id="muconsolecontainer">
+<!--
+ * Copyright Paul Bohm
+ * Based on code Copyright Facebook Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @provides fb.console
+ * -->
+<!--SNIP1-->
+<style type="text/css">
+/*---SNIP2---*/
+
+#muconsole html, #muconsole body, #muconsole div, #muconsole span, #muconsole applet, #muconsole object, #muconsole iframe,
+#muconsole h1, #muconsole h2, #muconsole h3, #muconsole h4, #muconsole h5, #muconsole h6, #muconsole p, #muconsole blockquote, #muconsole pre,
+#muconsole a, #muconsole abbr, #muconsole acronym, #muconsole address, #muconsole big, #muconsole cite, #muconsole code,
+#muconsole del, #muconsole dfn, #muconsole em, #muconsole font, #muconsole img, #muconsole ins, #muconsole kbd, #muconsole q, #muconsole s, #muconsole samp,
+#muconsole small, #muconsole strike, #muconsole strong, #muconsole sub, #muconsole sup, #muconsole tt, #muconsole var,
+#muconsole b, #muconsole u, #muconsole i, #muconsole center,
+#muconsole dl, #muconsole dt, #muconsole dd, #muconsole ol, #muconsole ul, #muconsole li,
+#muconsole fieldset, #muconsole form, #muconsole label, #muconsole legend,
+#muconsole table, #muconsole caption, #muconsole tbody, #muconsole tfoot, #muconsole thead, #muconsole tr, #muconsole th, #muconsole td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+
+#muconsole body {
+	line-height: 1;
+}
+#muconsole ol, ul {
+	list-style: none;
+}
+#muconsole blockquote, q {
+	quotes: none;
+}
+#muconsole blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define focus styles! */
+#muconsole :focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+#muconsole ins {
+	text-decoration: none;
+}
+#muconsole del {
+	text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+#muconsole table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+#muconsole, #muinfo {
+  font-size: 12px;
+  font-family: "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
+  position: absolute;
+  left:5px;
+  top:5px;
+  opacity: 1;
+  background-color: #fff;
+  z-index: 99999999999;
+  display: none;
+}
+#muconsole {
+  border: orange groove 3px;
+}
+#muinfo {
+  font-size: 18px;
+}
+
+#mubookmarklet #muconsole {
+  display: block;
+}
+
+#muinfo {
+  display: block;
+}
+#mubookmarklet #muinfo {
+  display: none;
+}
+
+#muconsole span {
+  color: #000;
+  z-index: 99999999999;
+  padding: 10px;
+}
+#muconsole h1 {
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0px 0.67em 10px;
+  color: #000;
+}
+#muconsole h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: -10px 0px 1em 30px;
+  color: #000;
+}
+#muconsole h2 {
+  display: block;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.83em 0px;
+  color: #009E29;
+}
+#muconsole a {
+  color: #3B5998;
+  text-decoration: none;
+}
+
+#muconsole th {
+  font-weight: bold;
+}
+#muconsole td, #muconsole th {
+display: table-cell;
+vertical-align: inherit;
+}
+
+#muconsole table {
+border-spacing: 2px 2px;
+border-color: gray;
+border-collapse: separate;
+display: table;
+}
+
+#muconsole a:hover {
+  text-decoration: underline;
+}
+
+#muconsole #controls {
+  margin: 20px 0 20px 0;
+  border-bottom: 1px solid #eee;
+}
+#muconsole #controls > div {
+  margin-left: 20px;
+  margin-bottom: 30px;
+}
+#muconsole #connected > div {
+  margin-bottom: 30px;
+}
+#muconsole .info {
+  font-size: 13px;
+  padding: 4px;
+}
+#muconsole .info.yes {
+  background-color: #fbfaf3;
+  color: #36365a;
+}
+#muconsole .info.no {
+  background-color: #fef8f6;
+  color: #cd0a0a;
+}
+#muconsole #status {
+  font-weight: bold;
+  font-size: 15px;
+  padding: 3px 6px;
+}
+#muconsole #status.notConnected {
+  background-color: #cc3f85;
+  color: #fff;
+}
+#muconsole #status.connected {
+  background-color: #448805;
+  color: #fff;
+}
+#muconsole #info {
+  margin-top: 12px;
+  font-family: Monaco, Consolas, monospace;
+}
+#muconsole #info th {
+  text-align: left;
+  padding-right: 20px;
+}
+
+#muconsole #user-info {
+  margin-left: 70px;
+}
+#muconsole #user-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+#muconsole #user-pic {
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  vertical-align: middle;
+  margin-left: 5px;
+  border: none;
+  height: 50px;
+  width: 50px;
+}
+#muconsole #contents li {
+  margin: 0;
+  list-style-type: circle;
+}
+
+/**
+ * Tag Browser
+ */
+#muconsole .tag-configurer {
+  margin-bottom: 1em;
+  width: 700px;
+}
+#muconsole .tag-configurer textarea,
+#muconsole .tag-configurer .preview {
+  float: right;
+  width: 400px;
+}
+#muconsole .tag-configurer .attr {
+  margin-top: 0.25em;
+}
+#muconsole .tag-configurer .attr label {
+  display: inline-block;
+  width: 100px;
+}
+/*---SNIP3---*/
+#muinfo > div {
+  float:left;margin-left: 20px;clear:both;
+}
+</style>
+<div id="muinfo">
+  <div>Hey, I'm a little Debug Tool for the Facebook Javascript API.</div>
+  <div style="margin-left: 80px; margin-top:5px; margin-bottom: 5px;"><img src="muconsole_screen.png"/></div>
+  <div style="margin-top:10px;margin-right:10px;"><strong>Easy Way</strong><br/>Add me as bookmarklet:</div>
+  <div style="margin-left:250px; margin-top:-42px;"><a style="text-decoration:none;" href="javascript:if(document.body&&!document.xmlVersion){if(window.FB.MUConsole){FB.MUConsole.show()}else{;void(a=document.createElement('script'));void(a.type='text/javascript');void(a.src='http://github.com/enki/muconsole/raw/master/muconsole.js');void(document.body.appendChild(a));}}else{}" onclick="alert('Drag and Drop me to your Bookmarks!'); return false;"><div style="background-color: #ff0a7c; font-size:30px; padding: 4px; border: #006bd4 solid 3px; color: #006bd4; margin: 0px; float:left;"><div style="margin-top:-6px;">m&#181;console</div></div></a></div>
+  <div style="margin-top:20px;"><strong>Hard way</strong><pre style="margin-top:0px;">
+1) Be sure to have the facebook api loaded
+2) Get muconsole.html loaded into the DOM
+3) Have some init code along these lines:
+     FB.Event.subscribe('auth.sessionChange', FB.MUConsole.gotStatus);
+     FB.init({
+      apiKey: 'YOURS',
+      cookie: true,
+      xfbml: true,
+      status: false
+     });
+ FB.getLoginStatus();
+4) do FB.MUConsole.show() and .hide() as needed.
+    </pre>
+  </div>
+</div>
+<!--SNIP4-->
+<div id="muconsole">
+  <div style="position:relative; float:right; right: 20px; top:10px; font-size: 18px;cursor:pointer;" onclick="FB.MUConsole.hide();">X</div>
+  <h1>M&#181; Connect &mdash; Console</h1>
+  <h3>brought to you by <a href="http://facebook.com/">Facebook</a> and <a href="http://paulbohm.com/">Paul Bohm</a></h3>
+
+  <div id="controls">
+    <div id="connect">
+      <h2>Connect</h2>
+
+      <input type="button"
+             value="Status"
+             onclick="FB.getLoginStatus(null, true)">
+      <input type="button"
+             value="Login"
+             onclick="FB.login()"
+             id="bt-login"
+             disabled="disabled">
+      <input type="button"
+             value="Disconnect"
+             onclick="FB.api({ method: 'Auth.revokeAuthorization' })"
+             id="bt-disconnect"
+             disabled="disabled">
+      <input type="button"
+             value="Logout"
+             onclick="FB.logout()"
+             id="bt-logout"
+             disabled="disabled">
+    </div>
+
+    <div id="connected">
+      <div id="permissions">
+        <h2>Permissions <span class="info" id="perms-info"></span></h2>
+
+        <input type="button"
+               value="Read Stream"
+               onclick="FB.login(FB.MUConsole.gotPerms, {perms:'read_stream'})">
+        <input type="button"
+               value="Publish Stream"
+               onclick="FB.login(FB.MUConsole.gotPerms, {perms: 'publish_stream'})">
+        <input type="button"
+               value="Full Stream"
+               onclick="FB.login(FB.MUConsole.gotPerms, {perms: 'read_stream,publish_stream'})">
+        <input type="button"
+               value="Offline Access"
+               onclick="FB.login(FB.MUConsole.gotPerms, {perms: 'offline_access'})">
+        <input type="button"
+               value="Events"
+               onclick="FB.login(FB.MUConsole.gotPerms, {perms: 'create_event,rsvp_event'})">
+        <input type="button"
+               value="SMS"
+               onclick="FB.login(FB.MUConsole.gotPerms, {perms: 'sms'})">
+        <input type="button"
+               value="Bulk"
+               onclick="FB.login(FB.MUConsole.gotPerms, {perms: 'read_stream,offline_access,sms,create_event,rsvp_event'})">
+      </div>
+
+      <!-- <div id="integration">
+        <h2>Integration <span class="info" id="integration-info"></span></h2>
+
+        <input type="button"
+               disabled="disabled"
+               value="Add Friend"
+               onclick="FB.addFriend('499029861', friendAdded)">
+      </div>
+    </div> -->
+
+    <div id="sans-session">
+      <h2>Sans Session <span class="info" id="sans-session-info"></span></h2>
+
+      <input type="button" value="Publish" onclick="FB.MUConsole.publishExample()">
+      <input type="button" value="Share"   onclick="FB.share()">
+    </div>
+  </div>
+
+  <div>
+    Status
+    <span id="status"></span>
+
+    <a id="user-info" style="visibility: hidden;">
+      as
+      <span id="user-name"></span>
+      <img id="user-pic"
+           src="http://static.ak.fbcdn.net/pics/t_silhouette.jpg"
+           alt="User Picture">
+    </a>
+  </div>
+  <div id="info"></div>
+</div>
+
+<!--SNIP5-->
+<script type="text/javascript">
+/*---SNIP6---*/
+
+if (window.FB){
+  var FB = window.FB
+/* be aware $_ is plain getElementById! */
+$_ = function(i) { return document.getElementById(i); };
+
+FB.provide('MUConsole', {
+  publishExample: function() {
+    var post = {
+      message: 'This is some text',
+      action_links: [
+        { text:'custom action link', href:'http://github.com/enki/muconsole/'}
+      ],
+      user_message_prompt: 'Tell the world about Popups?'
+    };
+    FB.publish(post, function(published_post) {
+      FB.MUConsole.statusUpdate(
+        'sans-session-info',
+        'post was ' + (published_post ? '' : 'not ') + 'published.',
+        published_post
+      );
+    });
+  },
+
+  showUserInfo: function() {
+    var userInfo = $_('user-info');
+    if (!FB.getSession()) {
+      userInfo.style.visibility = 'hidden';
+    } else {
+      var params = {
+        method: 'Fql.query',
+        query: (
+          'SELECT ' +
+            'name,' +
+            'pic_square,' +
+            'profile_url ' +
+          'FROM ' +
+            'user ' +
+          'WHERE ' +
+            'uid=' + FB.getSession().uid
+        )
+      };
+
+      FB.api(params, function(info) {
+        if (info.error_code) {
+          // bail
+          return;
+        }
+
+        info = info[0];
+
+        $_('user-name').innerHTML = info.name;
+        $_('user-pic').src = info.pic_square;
+        userInfo.href = info.profile_url;
+        userInfo.style.visibility = 'visible';
+      });
+    }
+  },
+
+  showSessionInfo: function() {
+    var
+      session     = FB.getSession(),
+      sessionInfo = $_('info');
+
+    if (!session) {
+      sessionInfo.style.visibility = 'hidden';
+    } else {
+      var rows = [];
+      for (var key in session) {
+        rows.push('<th>' + key + '</th>' + '<td>' + session[key] + '</td>');
+      }
+      sessionInfo.style.visibility = 'visible';
+      sessionInfo.innerHTML = (
+        '<table>' +
+        '<tr>' + rows.join('</tr><tr>') + '</tr>' +
+        '</table>'
+      );
+    }
+  },
+
+  // handles a session (or lack thereof)
+   gotStatus: function(response) {
+    FB.log(response);
+    FB.MUConsole.showSessionInfo();
+    FB.MUConsole.showUserInfo();
+
+    $_('status').innerHTML = response.status;
+    $_('status').className = response.status;
+
+    // var input = $_('integration').getElementsByTagName('input');
+    // for (var i=0, l=input.length; i<l; i++) {
+    //   input[i].disabled = !response.session;
+    // }
+
+    if (response.session) {
+      $_('bt-disconnect').disabled = $_('bt-logout').disabled = false;
+      $_('bt-login').disabled = true;
+    } else {
+      $_('bt-login').disabled = false;
+      $_('bt-disconnect').disabled = $_('bt-logout').disabled = true;
+    }
+  },
+
+   gotPerms: function(response) {
+    FB.MUConsole.gotStatus(response);
+    FB.MUConsole.statusUpdate(
+      'perms-info',
+      'were ' + (response.perms ? '' : 'not ') + 'granted.',
+      response.perms
+    );
+  },
+
+   statusUpdate: function(infoID, msg, yes) {
+    var info = $_(infoID);
+    info.innerHTML = msg;
+    info.className = 'info ' + (yes ? 'yes' : 'no');
+    info.style.visibility = 'visible';
+    window.setTimeout(function() { info.style.visibility = 'hidden'; }, 3000);
+  },
+
+  show: function(){
+    $_('muconsole').style.display = 'block';
+  },
+  
+  hide: function(){
+    $_('muconsole').style.display = 'none';
+  },
+
+  // friendAdded: function(added) {
+  //   FB.MUConsole.statusUpdate(
+  //     'integration-info',
+  //     'friend was ' + (added ? '' : 'not ') + 'added.',
+  //     added
+  //   );
+  // }
+  missingCommaErrorPreventer:''
+});
+}
+/*---SNIP7---*/
+</script>
+</div>
