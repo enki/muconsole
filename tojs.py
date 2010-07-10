@@ -32,13 +32,12 @@ js = u"""/* %s */
     }
     
     if (!FB.MUConsole) {
+        FB.MUConsole = {};
+        FB.MUConsole.subscribe_on_load = true;
         create('style', 'text/css', muconsoledata['css']);
         create('div', undefined, muconsoledata['html'], 'mubookmarklet');
         create('script', 'text/javascript', muconsoledata['js']);
     }
-    
-    FB.Event.subscribe('auth.statusChange', FB.MUConsole.gotStatus);
-    FB.getLoginStatus();
     //FB.MUConsole.show();
 """ % (header, json.dumps(data),)
 
