@@ -1,1 +1,1 @@
-Take a look at the [self-contained documentation](http://github.com/enki/muconsole/raw/master/muconsole.html)
+Take a look at the [self-contained documentation](http://paulbohm.com/static/muconsole.html)
